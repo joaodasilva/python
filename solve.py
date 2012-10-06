@@ -5,21 +5,18 @@
 import sys
 
 digits = '123456789'
+indices = [(row, col) for row in range(9) for col in range(9)]
+
+def group(iterable, times):
+  return zip(*[iter(iterable)] * times)
 
 def pretty_print(values):
   width = max(len(s) for s in values.values())
-  for row in range(9):
-    for col in range(9):
-      sys.stdout.write(values[(row, col)].center(width))
-      if col != 8:
-        sys.stdout.write(' ')
-      if col in [2, 5]:
-        sys.stdout.write('| ')
-    sys.stdout.write('\n')
-    if row in [2, 5]:
-      sys.stdout.write('-+-'.join(['-'.join(['-' * width] * 3)] * 3))
-      sys.stdout.write('\n')
-
+  items = [values[(row, col)].center(width) for row, col in indices ]
+  rows = [' '.join(l) for l in group(items, 3)]
+  grid = [' | '.join(s) for s in group(rows, 3)]
+  sep = '\n' + '-+-'.join(['-'.join(['-' * width] * 3)] * 3) + '\n'
+  print sep.join(['\n'.join(l) for l in group(grid, 3)])
 
 def parse_grid(grid):
   values = {}
