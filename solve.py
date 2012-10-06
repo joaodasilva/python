@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
-from itertools import *
+# sudoku solver, inspired by http://norvig.com/sudoku.html.
+
 import sys
 import time
 
 def group(iterable, times):
   return zip(*[iter(iterable)] * times)
 
-digits = '123456789'
-
 # This was the previous representation for |indices| and |unitlist| but it
 # can be simplified since the (row, col) tuple elements are never used. That
-# greatly speeds this up.
+# speeds this up very significantly.
 #
 # indices = [(row, col) for row in range(9) for col in range(9)]
 #
@@ -64,6 +63,7 @@ def assign(values, index, value):
   return all(remove(values, index, o) for o in values[index].replace(value, ''))
 
 def parse_grid(grid):
+  digits = '123456789'
   values = dict((s, digits) for s in indices)
   grid = dict(zip(indices, (c for c in grid if c in digits or c in '0.')))
   assert len(grid) == 81
