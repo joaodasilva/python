@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from copy import deepcopy
 from itertools import *
 import sys
 
@@ -21,7 +22,7 @@ peers = dict((s, set(x for u in units[s] for x in u if x!=s)) for s in indices)
 
 def remove(values, index, value):
   if value not in values[index]:
-    # Already removed. Prevent infinite recursion between 2 squares with one
+    # Already removed. Prevent infinite recursion between 2 slots with one
     # value each.
     return True
   values[index] = values[index].replace(value, '')
@@ -54,6 +55,24 @@ def parse_grid(grid):
     return False
   return values
 
+def search(values):
+  choices = [(len(values[s]), s) for s in indices]
+  if all(l == 1 for l, _ in choices):
+    return values
+  _, index = min((l, index) for l, index in choices if l > 1)
+  for v in values[index]:
+    copy = deepcopy(values)
+    if assign(copy, index, v):
+      result = search(copy)
+      if result: return result
+  return False
+
+def solve(puzzle):
+  values = parse_grid(puzzle)
+  if not values:
+    return False
+  return search(values)
+
 def pretty_print(values):
   width = max(len(s) for s in values.values())
   items = [values[(row, col)].center(width) for row, col in indices ]
@@ -62,8 +81,9 @@ def pretty_print(values):
   sep = '\n' + '-+-'.join(['-'.join(['-' * width] * 3)] * 3) + '\n'
   print sep.join(['\n'.join(l) for l in group(grid, 3)])
 
-def solve(puzzle):
-  return parse_grid(puzzle)
-
 if __name__ == '__main__' and len(sys.argv) == 2:
-  pretty_print(solve(open(sys.argv[1]).read()))
+  values = solve(open(sys.argv[1]).read())
+  if values:
+    pretty_print(values)
+  else:
+    print 'Error!'
