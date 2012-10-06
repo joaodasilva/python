@@ -19,18 +19,8 @@ def pretty_print(values):
   print sep.join(['\n'.join(l) for l in group(grid, 3)])
 
 def parse_grid(grid):
-  values = {}
-  i = 0
-  for c in grid:
-    if c in digits:
-      values[(i/9, i%9)] = c
-      i += 1
-    elif c in '0.':
-      values[(i/9, i%9)] = digits
-      i += 1
-  if i != 81:
-    return False
-  return values
+  return dict(zip(indices, (c if c in digits else digits
+                            for c in grid if c in digits or c in '0.')))
 
 if __name__ == '__main__':
   pretty_print(parse_grid(open(sys.argv[1]).read()))
