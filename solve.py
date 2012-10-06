@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from copy import deepcopy
 from itertools import *
 import sys
 
@@ -61,7 +60,7 @@ def search(values):
     return values
   _, index = min((l, index) for l, index in choices if l > 1)
   for v in values[index]:
-    copy = deepcopy(values)
+    copy = values.copy()
     if assign(copy, index, v):
       result = search(copy)
       if result: return result
