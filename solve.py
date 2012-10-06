@@ -63,7 +63,7 @@ def pretty_print(values):
   print sep.join(['\n'.join(l) for l in group(grid, 3)])
 
 def solve(puzzle):
-  pretty_print(parse_grid(puzzle))
+  return parse_grid(puzzle)
 
 if __name__ == '__main__' and len(sys.argv) == 2:
-  solve(open(sys.argv[1]).read())
+  pretty_print(solve(open(sys.argv[1]).read()))
