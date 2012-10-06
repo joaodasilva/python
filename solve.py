@@ -16,7 +16,7 @@ unitlist = ( group(indices, 9) +                        # rows
              [ tuple(product(rows, cols)) for rows in group(range(9), 3)
                                           for cols in group(range(9), 3) ] )
 
-units = dict((s, filter(lambda unit: s in unit, unitlist)) for s in indices)
+units = dict((s, [u for u in unitlist if s in u]) for s in indices)
 
 peers = dict((s, set(x for u in units[s] for x in u if x!=s)) for s in indices)
 
@@ -75,7 +75,7 @@ def solve(puzzle):
 
 def pretty_print(values):
   width = max(len(s) for s in values.values())
-  items = [values[(row, col)].center(width) for row, col in indices ]
+  items = [values[s].center(width) for s in indices ]
   rows = [' '.join(l) for l in group(items, 3)]
   grid = [' | '.join(s) for s in group(rows, 3)]
   sep = '\n' + '-+-'.join(['-'.join(['-' * width] * 3)] * 3) + '\n'
