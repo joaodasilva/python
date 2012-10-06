@@ -32,6 +32,14 @@ def remove(values, index, value):
     # Single value: remove it from the peers of |index|.
     if not all(remove(values, p, values[index]) for p in peers[index]):
       return False
+  # If a unit has only one slot left for |value|, put it there.
+  for unit in units[index]:
+    choices = [index for index in unit if value in values[index]]
+    if len(choices) == 0:
+      # No place for |value| available.
+      return False
+    elif len(choices) == 1 and not assign(values, choices[0], value):
+      return False
   return True
 
 def assign(values, index, value):
