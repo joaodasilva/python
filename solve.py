@@ -2,20 +2,36 @@
 
 from itertools import *
 import sys
+import time
 
 def group(iterable, times):
   return zip(*[iter(iterable)] * times)
 
 digits = '123456789'
-indices = [(row, col) for row in range(9) for col in range(9)]
 
-unitlist = ( group(indices, 9) +                        # rows
-             group([(y, x) for x, y in indices], 9) +   # columns
-             # squares
-             [ tuple(product(rows, cols)) for rows in group(range(9), 3)
-                                          for cols in group(range(9), 3) ] )
+# This was the previous representation for |indices| and |unitlist| but it
+# can be simplified since the (row, col) tuple elements are never used. That
+# greatly speeds this up.
+#
+# indices = [(row, col) for row in range(9) for col in range(9)]
+#
+# unitlist = ( group(indices, 9) +                        # rows
+#              group([(y, x) for x, y in indices], 9) +   # columns
+#              # squares
+#              [ tuple(product(rows, cols)) for rows in group(range(9), 3)
+#                                           for cols in group(range(9), 3) ] )
 
-units = dict((s, [u for u in unitlist if s in u]) for s in indices)
+indices = tuple(range(81))
+unit = (0, 1, 2, 9, 10, 11, 18, 19, 20)
+unitlist = (
+    # rows
+    group(indices, 9) +
+    # columns
+    zip(*group(indices, 9)) +
+    # squares
+    [(x + offset*3 for x in unit) for offset in unit] )
+
+units = dict((s, tuple(u for u in unitlist if s in u)) for s in indices)
 
 peers = dict((s, set(x for u in units[s] for x in u if x!=s)) for s in indices)
 
@@ -81,8 +97,12 @@ def pretty_print(values):
   print sep.join(['\n'.join(l) for l in group(grid, 3)])
 
 if __name__ == '__main__' and len(sys.argv) == 2:
-  values = solve(open(sys.argv[1]).read())
+  puzzle = open(sys.argv[1]).read()
+  start = time.clock()
+  values = solve(puzzle)
+  t = time.clock()-start
   if values:
     pretty_print(values)
   else:
     print 'Error!'
+  print '%.3f secs' % t
