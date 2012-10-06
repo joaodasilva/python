@@ -22,14 +22,15 @@ digits = '123456789'
 #                                           for cols in group(range(9), 3) ] )
 
 indices = tuple(range(81))
-unit = (0, 1, 2, 9, 10, 11, 18, 19, 20)
+
+first_square = (0, 1, 2, 9, 10, 11, 18, 19, 20)
 unitlist = (
     # rows
     group(indices, 9) +
     # columns
     zip(*group(indices, 9)) +
     # squares
-    [(x + offset*3 for x in unit) for offset in unit] )
+    [(x + offset*3 for x in first_square) for offset in first_square] )
 
 units = dict((s, tuple(u for u in unitlist if s in u)) for s in indices)
 
