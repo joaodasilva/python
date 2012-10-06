@@ -12,6 +12,8 @@ def group(iterable, times):
 # can be simplified since the (row, col) tuple elements are never used. That
 # speeds this up very significantly.
 #
+# from itertools import product
+#
 # indices = [(row, col) for row in range(9) for col in range(9)]
 #
 # unitlist = ( group(indices, 9) +                        # rows
@@ -29,7 +31,7 @@ unitlist = (
     # columns
     zip(*group(indices, 9)) +
     # squares
-    [(x + offset*3 for x in first_square) for offset in first_square] )
+    [[x + offset*3 for x in first_square] for offset in first_square] )
 
 units = dict((s, tuple(u for u in unitlist if s in u)) for s in indices)
 
